@@ -1,18 +1,28 @@
 import java.util.*;
-import java.util.stream.*;
 
-// 🔹 Bogie class
-class Bogie {
+// 🔹 Custom Exception Class
+class InvalidCapacityException extends Exception {
+    public InvalidCapacityException(String message) {
+        super(message);
+    }
+}
+
+// 🔹 Passenger Bogie Class
+class PassengerBogie {
     String name;
     int capacity;
 
-    public Bogie(String name, int capacity) {
+    // 🔹 Constructor with validation
+    public PassengerBogie(String name, int capacity) throws InvalidCapacityException {
+        if (capacity <= 0) {
+            throw new InvalidCapacityException("Capacity must be greater than zero");
+        }
         this.name = name;
         this.capacity = capacity;
     }
 
     public String toString() {
-        return name + " (" + capacity + ")";
+        return name + " (" + capacity + " seats)";
     }
 }
 
@@ -22,55 +32,26 @@ public class TrainApp {
 
         System.out.println("=== Train Consist Management App ===");
 
-        // 🔹 Create large dataset
-        List<Bogie> bogies = new ArrayList<>();
-        for (int i = 1; i <= 10000; i++) {
-            bogies.add(new Bogie("Bogie" + i, (i % 100) + 20)); // capacities 20–119
+        List<PassengerBogie> bogies = new ArrayList<>();
+
+        try {
+            // 🔹 Valid bogies
+            bogies.add(new PassengerBogie("Sleeper", 72));
+            bogies.add(new PassengerBogie("AC Chair", 56));
+
+            // 🔹 Invalid bogie (will throw exception)
+            bogies.add(new PassengerBogie("First Class", 0));
+
+        } catch (InvalidCapacityException e) {
+            System.out.println("\nException Caught: " + e.getMessage());
         }
 
-        // =========================
-        // 🔹 Loop-Based Filtering
-        // =========================
-        long startLoop = System.nanoTime();
-
-        List<Bogie> loopResult = new ArrayList<>();
-        for (Bogie b : bogies) {
-            if (b.capacity > 60) {
-                loopResult.add(b);
-            }
+        // 🔹 Display valid bogies
+        System.out.println("\nValid Bogies in Train:");
+        for (PassengerBogie b : bogies) {
+            System.out.println(b);
         }
 
-        long endLoop = System.nanoTime();
-        long loopTime = endLoop - startLoop;
-
-        // =========================
-        // 🔹 Stream-Based Filtering
-        // =========================
-        long startStream = System.nanoTime();
-
-        List<Bogie> streamResult = bogies.stream()
-                .filter(b -> b.capacity > 60)
-                .collect(Collectors.toList());
-
-        long endStream = System.nanoTime();
-        long streamTime = endStream - startStream;
-
-        // =========================
-        // 🔹 Display Results
-        // =========================
-        System.out.println("\nLoop Result Size: " + loopResult.size());
-        System.out.println("Stream Result Size: " + streamResult.size());
-
-        System.out.println("\nLoop Execution Time: " + loopTime + " ns");
-        System.out.println("Stream Execution Time: " + streamTime + " ns");
-
-        // 🔹 Validate results match
-        if (loopResult.size() == streamResult.size()) {
-            System.out.println("\n✔ Both approaches produce SAME results");
-        } else {
-            System.out.println("\n❌ Results DIFFER");
-        }
-
-        System.out.println("\nPerformance comparison completed.");
+        System.out.println("\nSystem continues safely after validation.");
     }
 }
