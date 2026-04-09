@@ -1,32 +1,49 @@
 import java.util.*;
 
+// 🔹 Bogie class (custom object)
+class Bogie {
+    String name;
+    int capacity;
+
+    public Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
+    }
+
+    public String toString() {
+        return name + " (" + capacity + " seats)";
+    }
+}
+
 public class TrainApp {
 
     public static void main(String[] args) {
 
         System.out.println("=== Train Consist Management App ===");
 
-        // 🔹 Create HashMap (Bogie → Capacity)
-        Map<String, Integer> bogieCapacity = new HashMap<>();
+        // 🔹 Create List of Bogie objects
+        List<Bogie> bogies = new ArrayList<>();
 
-        // 🔹 Insert key–value pairs using put()
-        bogieCapacity.put("Sleeper", 72);
-        bogieCapacity.put("AC Chair", 50);
-        bogieCapacity.put("First Class", 24);
-        bogieCapacity.put("Cargo", 100); // example load capacity
+        // 🔹 Add passenger bogies
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 56));
+        bogies.add(new Bogie("First Class", 24));
 
-        // 🔹 Display mapping using entrySet()
-        System.out.println("\nBogie Capacity Details:");
+        System.out.println("\nBefore Sorting:");
+        System.out.println(bogies);
 
-        for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
-            System.out.println(entry.getKey() + " -> Capacity: " + entry.getValue());
-        }
+        // 🔹 Sort using Comparator (by capacity ascending)
+        bogies.sort(Comparator.comparingInt(b -> b.capacity));
 
-        // 🔹 Example: Fast lookup
-        String searchBogie = "Sleeper";
-        System.out.println("\nCapacity of " + searchBogie + ": "
-                + bogieCapacity.get(searchBogie));
+        System.out.println("\nAfter Sorting by Capacity (Ascending):");
+        System.out.println(bogies);
 
-        System.out.println("\nSystem ready for capacity analysis...");
+        // 🔹 Sort in descending order (optional)
+        bogies.sort((b1, b2) -> Integer.compare(b2.capacity, b1.capacity));
+
+        System.out.println("\nAfter Sorting by Capacity (Descending):");
+        System.out.println(bogies);
+
+        System.out.println("\nSystem ready for capacity-based planning...");
     }
 }
