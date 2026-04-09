@@ -1,10 +1,10 @@
 import java.util.*;
 import java.util.stream.*;
 
-// 🔹 Bogie class (extended with type)
+// 🔹 Bogie class (same as previous UCs)
 class Bogie {
     String name;
-    String type; // Passenger / Goods
+    String type;
     int capacity;
 
     public Bogie(String name, String type, int capacity) {
@@ -14,7 +14,7 @@ class Bogie {
     }
 
     public String toString() {
-        return name + " (" + capacity + ")";
+        return name + " (" + capacity + " seats)";
     }
 }
 
@@ -30,27 +30,22 @@ public class TrainApp {
         bogies.add(new Bogie("Sleeper", "Passenger", 72));
         bogies.add(new Bogie("AC Chair", "Passenger", 56));
         bogies.add(new Bogie("First Class", "Passenger", 24));
-        bogies.add(new Bogie("Cargo Rectangular", "Goods", 100));
-        bogies.add(new Bogie("Cargo Cylindrical", "Goods", 120));
-        bogies.add(new Bogie("Sleeper", "Passenger", 72)); // duplicate type
 
-        System.out.println("\nOriginal Bogie List:");
+        System.out.println("\nBogie List:");
         System.out.println(bogies);
 
-        // 🔹 Group by type using groupingBy()
-        Map<String, List<Bogie>> groupedBogies = bogies.stream()
-                .collect(Collectors.groupingBy(b -> b.type));
+        // 🔹 Stream Aggregation (map + reduce)
+        int totalSeats = bogies.stream()
+                .map(b -> b.capacity)          // extract capacity
+                .reduce(0, Integer::sum);      // sum all values
 
-        // 🔹 Display grouped result
-        System.out.println("\nGrouped Bogies by Type:");
-        for (Map.Entry<String, List<Bogie>> entry : groupedBogies.entrySet()) {
-            System.out.println(entry.getKey() + " -> " + entry.getValue());
-        }
+        // 🔹 Display total
+        System.out.println("\nTotal Seating Capacity: " + totalSeats);
 
         // 🔹 Verify original list unchanged
-        System.out.println("\nOriginal List After Grouping (Unchanged):");
+        System.out.println("\nOriginal List After Aggregation (Unchanged):");
         System.out.println(bogies);
 
-        System.out.println("\nSystem ready for structured reporting...");
+        System.out.println("\nSystem ready for capacity analytics...");
     }
 }
