@@ -6,25 +6,27 @@ public class TrainApp {
 
         System.out.println("=== Train Consist Management App ===");
 
-        // 🔹 Create LinkedHashSet (ordered + unique)
-        Set<String> trainFormation = new LinkedHashSet<>();
+        // 🔹 Create HashMap (Bogie → Capacity)
+        Map<String, Integer> bogieCapacity = new HashMap<>();
 
-        // 🔹 Add bogies
-        trainFormation.add("Engine");
-        trainFormation.add("Sleeper");
-        trainFormation.add("Cargo");
-        trainFormation.add("Guard");
+        // 🔹 Insert key–value pairs using put()
+        bogieCapacity.put("Sleeper", 72);
+        bogieCapacity.put("AC Chair", 50);
+        bogieCapacity.put("First Class", 24);
+        bogieCapacity.put("Cargo", 100); // example load capacity
 
-        // 🔹 Attempt to add duplicate
-        trainFormation.add("Sleeper"); // duplicate (ignored)
+        // 🔹 Display mapping using entrySet()
+        System.out.println("\nBogie Capacity Details:");
 
-        // 🔹 Display formation
-        System.out.println("\nTrain Formation (Insertion Order Preserved):");
-        System.out.println(trainFormation);
+        for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
+            System.out.println(entry.getKey() + " -> Capacity: " + entry.getValue());
+        }
 
-        // 🔹 Show size (duplicate not counted)
-        System.out.println("\nTotal bogies: " + trainFormation.size());
+        // 🔹 Example: Fast lookup
+        String searchBogie = "Sleeper";
+        System.out.println("\nCapacity of " + searchBogie + ": "
+                + bogieCapacity.get(searchBogie));
 
-        System.out.println("\nDuplicate entries automatically prevented.");
+        System.out.println("\nSystem ready for capacity analysis...");
     }
 }
