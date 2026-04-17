@@ -1,83 +1,125 @@
-import java.util.*;
+import java.util.Arrays;
+import java.util.Scanner;
 
-// 🔹 Custom Runtime Exception
-class CargoSafetyException extends RuntimeException {
-    public CargoSafetyException(String message) {
-        super(message);
-    }
-}
+public class TrainConsistManagementApp {
 
-// 🔹 Goods Bogie Class
-class GoodsBogie {
-    String type;   // Rectangular / Cylindrical
-    String cargo;  // Assigned cargo
+    // Binary Search Method
+    public static int binarySearch(String[] bogieIds, String key) {
+        int low = 0;
+        int high = bogieIds.length - 1;
 
-    public GoodsBogie(String type) {
-        this.type = type;
-    }
+        while (low <= high) {
+            int mid = (low + high) / 2;
 
-    // 🔹 Cargo assignment with safety validation
-    public void assignCargo(String cargo) {
-        try {
-            // ❌ Unsafe condition
-            if (type.equalsIgnoreCase("Rectangular") &&
-                    cargo.equalsIgnoreCase("Petroleum")) {
+            int comparison = key.compareTo(bogieIds[mid]);
 
-                throw new CargoSafetyException(
-                        "Unsafe: Rectangular bogie cannot carry Petroleum"
-                );
+            if (comparison == 0) {
+                return mid; // Found
+            } else if (comparison > 0) {
+                low = mid + 1; // Search right half
+            } else {
+                high = mid - 1; // Search left half
             }
+        }
+        return -1; // Not found
+    }
 
-            // ✔ Safe assignment
-            this.cargo = cargo;
-            System.out.println("Cargo '" + cargo + "' assigned to " + type + " bogie");
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-        } catch (CargoSafetyException e) {
-            // 🔹 Handle exception gracefully
-            System.out.println("Exception Caught: " + e.getMessage());
+        // Input bogie IDs
+        System.out.print("Enter number of bogie IDs: ");
+        int n = scanner.nextInt();
+        scanner.nextLine();
 
-        } finally {
-            // 🔹 Always executes
-            System.out.println("Cargo assignment attempt completed for " + type + " bogie\n");
+        String[] bogieIds = new String[n];
+
+        System.out.println("Enter bogie IDs:");
+        for (int i = 0; i < n; i++) {
+            bogieIds[i] = scanner.nextLine();
+        }
+
+        // Ensure sorting (important precondition)
+        Arrays.sort(bogieIds);
+
+        System.out.println("Sorted Bogie IDs:");
+        System.out.println(Arrays.toString(bogieIds));
+
+        // Search key input
+        System.out.print("Enter bogie ID to search: ");
+        String key = scanner.nextLine();
+
+        // Perform Binary Search
+        int result = binarySearch(bogieIds, key);
+
+        // Display result
+        if (result != -1) {
+            System.out.println("Bogie ID found at index: " + result);
+        } else {
+            System.out.println("Bogie ID not found.");
+        }
+
+        scanner.close();
+
+        // Run test cases
+        runTests();
+    }
+
+    // -----------------------------
+    // Simple Test Framework
+    // -----------------------------
+    public static void assertEqual(String testName, int actual, int expected) {
+        if (actual == expected) {
+            System.out.println(testName + " PASSED");
+        } else {
+            System.out.println(testName + " FAILED (Expected: " + expected + ", Actual: " + actual + ")");
         }
     }
 
-    public String toString() {
-        return type + " Bogie -> Cargo: " + (cargo == null ? "None" : cargo);
+    public static void runTests() {
+        System.out.println("\nRunning Test Cases...\n");
+
+        testSearch_Found();
+        testSearch_NotFound();
+        testSearch_FirstElement();
+        testSearch_LastElement();
+        testSearch_SingleElement();
     }
-}
 
-// 🔹 Main Application
-public class TrainApp {
+    // Test Cases
 
-    public static void main(String[] args) {
+    public static void testSearch_Found() {
+        String[] input = {"B1","A1","C1","D1"};
+        Arrays.sort(input);
+        int result = binarySearch(input, "C1");
+        assertEqual("testSearch_Found", result, Arrays.asList(input).indexOf("C1"));
+    }
 
-        System.out.println("=== Train Consist Management App ===");
+    public static void testSearch_NotFound() {
+        String[] input = {"A1","B1","C1"};
+        Arrays.sort(input);
+        int result = binarySearch(input, "X1");
+        assertEqual("testSearch_NotFound", result, -1);
+    }
 
-        // 🔹 Create goods bogies
-        GoodsBogie bogie1 = new GoodsBogie("Cylindrical");
-        GoodsBogie bogie2 = new GoodsBogie("Rectangular");
+    public static void testSearch_FirstElement() {
+        String[] input = {"C1","A1","B1"};
+        Arrays.sort(input);
+        int result = binarySearch(input, "A1");
+        assertEqual("testSearch_FirstElement", result, 0);
+    }
 
-        // =========================
-        // ✔ Safe Assignment
-        // =========================
-        bogie1.assignCargo("Petroleum");
+    public static void testSearch_LastElement() {
+        String[] input = {"A1","B1","C1"};
+        Arrays.sort(input);
+        int result = binarySearch(input, "C1");
+        assertEqual("testSearch_LastElement", result, 2);
+    }
 
-        // =========================
-        // ❌ Unsafe Assignment
-        // =========================
-        bogie2.assignCargo("Petroleum");
-
-        // =========================
-        // ✔ Another Safe Assignment
-        // =========================
-        bogie2.assignCargo("Coal");
-
-        // 🔹 Final State
-        System.out.println("Final Bogie States:");
-        System.out.println(bogie1);
-        System.out.println(bogie2);
-
-        System.out.println("\nProgram continues safely after handling exceptions.");
+    public static void testSearch_SingleElement() {
+        String[] input = {"A1"};
+        Arrays.sort(input);
+        int result = binarySearch(input, "A1");
+        assertEqual("testSearch_SingleElement", result, 0);
     }
 }
